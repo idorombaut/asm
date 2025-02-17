@@ -1,0 +1,19 @@
+; file prog.as
+
+.entry HELLO
+.extern C
+STR:        .string "wxyz"
+HELLO:      add @r7 , A
+.data 7 , -57, +17 ,9
+LINE:       inc @r2
+            jmp LINE
+                add B, @r0
+                bne END
+            mov @r1,@r2
+.extern A
+STRING: .string "Hello, World!"
+                inc @r2
+                mov C,@r1
+END:        stop
+.extern B
+.entry LINE
