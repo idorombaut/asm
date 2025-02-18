@@ -71,6 +71,85 @@ The assembler processes a custom assembly language with the following key compon
 - **Directives**: `.data`, `.string`, `.extern`, `.entry`
 - **Macros**: Defined with `mcro` and `endmcro`
 
+## Hardware Specification
+
+### CPU
+- **Registers**: 9 total  
+  **8 general-purpose registers**: r0 to r7  
+  **1 program status word (PSW) register**
+- **Register size**: 12 bits (1 word)
+
+### Memory
+- **RAM size**: 1024 words
+- **Word size**: 12 bits
+- **Stack**
+- **Arithmetic**: Signed 2's complement (no floating-point support)
+
+## Instruction Encoding
+
+### Instruction Format (First Word)
+Each instruction is stored as **one to three words** in memory. The first word is structured as follows:
+
+|         11           9         |  8  5  |           4             2           |  1   0  |
+| ------------------------------ | ------ | ----------------------------------- | ------- |
+| Source Operand Addressing Mode | opcode | Destination Operand Addressing Mode | A, R, E |
+
+### Base-64 Encoding
+Each 12-bit word is represented using two characters from the base-64 encoding table ([Base-64](https://en.wikipedia.org/wiki/Base64)).
+
+## Supported Commands (Opcodes in Decimal)
+
+| Opcode (decimal) | Command |
+| ---------------- | ------- |
+| 0                | `mov`   |
+| 1                | `cmp`   |
+| 2                | `add`   |
+| 3                | `sub`   |
+| 4                | `not`   |
+| 5                | `clr`   |
+| 6                | `lea`   |
+| 7                | `inc`   |
+| 8                | `dec`   |
+| 9                | `jmp`   |
+| 10               | `bne`   |
+| 11               | `red`   |
+| 12               | `prn`   |
+| 13               | `jsr`   |
+| 14               | `rts`   |
+| 15               | `stop`  |
+
+## Directives
+Assembly directives control **memory allocation and linking**.
+
+1. `.data`
+   Allocates space in the **data section** for integers.  
+   **Example**:
+   ```
+   LABEL1: .data 7, -56, 4, 9
+   ```
+   > Stores the values 7, -56, 4, 9 in memory.
+2. `.string`
+   Stores a string as **ASCII characters** in memory, followed by a null terminator (`\0`).  
+   **Example**:
+   ```
+   STRING1: .string "hello"
+   ```
+   > Stores: h, e, l, l, o, \0
+3. `.entry`
+   Declares a label that **can be accessed by other files**.  
+   **Example** (`file1.as`):
+   ```
+   .entry HELLO
+   HELLO: add #1, r1
+   ```
+4. `.extern`
+   Declares a label that is **defined in another file**.  
+   **Example** (`file2.as`):
+   ```
+   .extern HELLO
+   ```
+   > Matches the .entry HELLO in file1.as.
+
 ### Example Assembly Program
 ```
 MAIN:       MOV @r3, LENGTH
