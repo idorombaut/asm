@@ -64,13 +64,6 @@ The assembler will generate output files with the same filenames but with the fo
 - `.ent`: Entries file (symbols marked with `.entry`)
 - `.ext`: Externals file (symbols marked with `.extern`)
 
-## Assembly Language Syntax
-The assembler processes a custom assembly language with the following key components:
-- **Instructions**: `MOV`, `ADD`, `SUB`, `CMP`, `JMP`, `BNE`, `INC`, `DEC`, `STOP`
-- **Addressing Modes**: Immediate (`#5`), Direct (`VAR`), Register (`@r2`)
-- **Directives**: `.data`, `.string`, `.extern`, `.entry`
-- **Macros**: Defined with `mcro` and `endmcro`
-
 ## Hardware Specification
 
 ### CPU
@@ -97,7 +90,10 @@ Each instruction is stored as **one to three words** in memory. The first word i
 ### Base-64 Encoding
 Each 12-bit word is represented using two characters from the base-64 encoding table ([Base-64](https://en.wikipedia.org/wiki/Base64)).
 
-## Supported Commands (Opcodes in Decimal)
+## Assembly Language Syntax
+The assembler processes a custom assembly language with the following components:
+
+### Instructions
 
 | Opcode (decimal) | Command |
 | ---------------- | ------- |
@@ -118,7 +114,12 @@ Each 12-bit word is represented using two characters from the base-64 encoding t
 | 14               | `rts`   |
 | 15               | `stop`  |
 
-## Directives
+### Addressing Modes
+- **Immediate Mode**: `#5` (uses a constant value)
+- **Direct Mode**: `VAR` (references a memory location)
+- **Register Mode**: `@r2` (uses a CPU register)
+
+### Directives
 Assembly directives control **memory allocation and linking**.
 
 1. `.data`
@@ -150,7 +151,20 @@ Assembly directives control **memory allocation and linking**.
    ```
    > Matches the .entry HELLO in file1.as.
 
-### Example Assembly Program
+### Macros
+Macros allow defining reusable blocks of code:
+```
+mcro SUM
+    ADD @r1, @r2
+    MOV A, @r3
+endmcro
+```
+To use the macro, just call it by name:
+```
+SUM
+```
+
+## Example Assembly Program
 ```
 MAIN:       MOV @r3, LENGTH
 LOOP:       JMP L1
